@@ -1,27 +1,14 @@
 kind: pipeline
-type: docker
+type: exec
 name: default
 
-steps:
+platform:
+  os: linux
+  arch: amd64
 
+steps:
   - name: build
-    image: maven:3-jdk-11
-    volumes:
-      - name: mvn-cache
-        path: /root/.m2
-      - name: mvn-build
-        path: /app/build
     commands:
       - mvn compile package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-      - cp target/*.jar /app/build/
-      - cp Dockerfile /app/build/Dockerfile
-
-volumes:
-  - name: mvn-build
-    host:
-      path: /data/maven/build
-
-  - name: mvn-cache
-    host:
-      path: /data/maven/cache
-
+      - cp target/*.jar /data/maven/build
+      - cp Dockerfile /data/maven/cache/Dockerfile
