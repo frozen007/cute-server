@@ -14,3 +14,7 @@ steps:
   - name: image
     commands:
       - docker build -t myz/cute-server:1.0 .
+
+  - name: deploy
+    commands:
+      - kubectl apply -f cute-server-deploy.yaml
