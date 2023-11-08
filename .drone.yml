@@ -10,5 +10,7 @@ steps:
   - name: build
     commands:
       - mvn compile package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-      - cp target/*.jar /data/maven/build
-      - cp Dockerfile /data/maven/build/Dockerfile
+
+  - name: image
+    commands:
+      - docker build -t myz/cute-server:1.0 .
