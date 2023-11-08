@@ -20,7 +20,7 @@ steps:
 
   - name: put-version
     commands:
-      - sed "s/__LABEL_VERSION__/v${DRONE_BUILD_NUMBER}/g" cute-server-deploy.yaml > cute-server-deploy.yaml
+      - sed "s/__LABEL_VERSION__/v${DRONE_BUILD_NUMBER}/g" cute-server-deploy.yaml > /root/cute-server-deploy.yaml
 
   - name: deploy
     commands:
