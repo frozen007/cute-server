@@ -20,4 +20,5 @@ steps:
 
   - name: deploy
     commands:
+      - sed "s/__LABEL_VERSION__/v${DRONE_BUILD_NUMBER}/g" cute-server-deploy.yaml > cute-server-deploy.yaml
       - kubectl apply -f cute-server-deploy.yaml
