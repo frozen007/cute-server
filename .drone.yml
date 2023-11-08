@@ -11,4 +11,4 @@ steps:
     commands:
       - mvn compile package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - cp target/*.jar /data/maven/build
-      - cp Dockerfile /data/maven/cache/Dockerfile
+      - cp Dockerfile /data/maven/build/Dockerfile
