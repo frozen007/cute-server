@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         app: cute-server
-        version: v1.1
+        version: v1.2
     spec:
       containers:
         - name: cute-server

@@ -64,7 +64,7 @@ public class CuteServerHandler extends ChannelInboundHandlerAdapter {
                 response = "{\"msg\":\"hi, server time: " + sdf.format(now)+"\"}";
                 break;
             default:
-                response = "{\"msg\":\"unknown uri\"}";
+                response = "{\"msg\":\"unknown uri " + uri + "\"}";
                 break;
         }
 
