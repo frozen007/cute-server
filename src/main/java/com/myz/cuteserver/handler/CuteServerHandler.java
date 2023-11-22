@@ -24,6 +24,8 @@ import java.util.Date;
  */
 public class CuteServerHandler extends ChannelInboundHandlerAdapter {
 
+    private static final String REDIRECT_URL = "https://blog.csdn.net/weixin_43934607/article/details/116618227";
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     private HttpRequest request;
@@ -54,7 +56,10 @@ public class CuteServerHandler extends ChannelInboundHandlerAdapter {
 
     private void handle(ChannelHandlerContext ctx, HttpRequest request) throws Exception {
         String uri = request.uri();
-        String response;
+        String response="";
+        boolean isRedirect = false;
+        String redirectUrl = "";
+        HttpResponseStatus status = HttpResponseStatus.OK;
         switch (uri) {
             case "/hello":
                 response = "{\"msg\":\"hi, this is cute server\"}";
@@ -63,19 +68,38 @@ public class CuteServerHandler extends ChannelInboundHandlerAdapter {
                 Date now = new Date();
                 response = "{\"msg\":\"hi, server time: " + sdf.format(now)+"\"}";
                 break;
+            case "/redirect301":
+                isRedirect = true;
+                status = HttpResponseStatus.MOVED_PERMANENTLY;
+                redirectUrl = REDIRECT_URL;
+                response = "\n";
+                break;
+            case "/redirect302":
+                isRedirect = true;
+                status = HttpResponseStatus.FOUND;
+                redirectUrl = REDIRECT_URL;
+                response = "\n";
+                break;
             default:
                 response = "{\"msg\":\"unknown uri " + uri + "\"}";
                 break;
         }
 
+        FullHttpResponse httpResponse;
         byte[] bytes = response.getBytes("UTF-8");
-        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
-                Unpooled.wrappedBuffer(bytes));
+        if(!isRedirect) {
+            httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.wrappedBuffer(bytes));
 
-        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
-        httpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
-        if (HttpUtil.isKeepAlive(request)) {
-            httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderNames.CONNECTION);
+            httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+            httpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
+            if (HttpUtil.isKeepAlive(request)) {
+                httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderNames.CONNECTION);
+            }
+        } else {
+            httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.wrappedBuffer(bytes));
+            httpResponse.headers().set(HttpHeaderNames.LOCATION, redirectUrl)
+                    .set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");;
+
         }
         ctx.channel().writeAndFlush(httpResponse);
     }
