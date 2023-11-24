@@ -1,6 +1,7 @@
 package com.myz.cuteserver;
 
 import com.myz.cuteserver.handler.CuteServerHandler;
+import com.myz.cuteserver.handler.UriMappingHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -69,7 +70,8 @@ public class CuteServer {
                         ch.pipeline()
                                 .addLast("decoder", new HttpRequestDecoder())
                                 .addLast("encoder", new HttpResponseEncoder())
-                                .addLast("handler", new CuteServerHandler());
+                                //.addLast("handler", new CuteServerHandler());
+                                .addLast("handler", new UriMappingHandler());
                     }
                 });
 
