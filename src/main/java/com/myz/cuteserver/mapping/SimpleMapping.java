@@ -3,7 +3,6 @@ package com.myz.cuteserver.mapping;
 import com.myz.cuteserver.annotation.UriMapping;
 import com.myz.cuteserver.annotation.UriVariable;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 
 /**
@@ -19,8 +18,9 @@ public class SimpleMapping {
     }
 
     @UriMapping("/hello")
-    public String hello(@UriVariable("name") String name) {
+    public String hello(@UriVariable("name") String name, @UriVariable("age") String age) {
         String date= new Date().toString();
-        return "hello [" + name + "] " + date;
+        String out = String.format("hello name=%s age=%s date=%s.", name, age, date);
+        return out;
     }
 }

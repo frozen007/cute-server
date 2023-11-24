@@ -1,7 +1,7 @@
 package com.myz.cuteserver;
 
-import com.myz.cuteserver.handler.CuteServerHandler;
 import com.myz.cuteserver.handler.UriMappingHandler;
+import com.myz.cuteserver.processor.UriMappingProcessor;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -56,6 +56,7 @@ public class CuteServer {
                     new DefaultThreadFactory("CuteServerWorkerGroup", true));
         }
 
+        UriMappingProcessor uriMappingProcessor = new UriMappingProcessor();
         bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup)
                 .channel(workerGroup instanceof EpollEventLoopGroup ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
@@ -71,7 +72,7 @@ public class CuteServer {
                                 .addLast("decoder", new HttpRequestDecoder())
                                 .addLast("encoder", new HttpResponseEncoder())
                                 //.addLast("handler", new CuteServerHandler());
-                                .addLast("handler", new UriMappingHandler());
+                                .addLast("handler", new UriMappingHandler(uriMappingProcessor));
                     }
                 });
 

@@ -1,4 +1,4 @@
-package com.myz.cuteserver;
+package com.myz.cuteserver.processor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
