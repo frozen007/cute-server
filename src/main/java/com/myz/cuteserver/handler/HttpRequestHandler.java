@@ -94,6 +94,9 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     private FullHttpResponse returnWithStatus(String msg, HttpResponseStatus status) throws UnsupportedEncodingException {
+        if (msg == null) {
+            msg = "null";
+        }
         byte[] bytes = msg.getBytes("UTF-8");
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status,
                 Unpooled.wrappedBuffer(bytes));
