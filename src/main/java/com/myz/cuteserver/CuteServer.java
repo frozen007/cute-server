@@ -1,6 +1,6 @@
 package com.myz.cuteserver;
 
-import com.myz.cuteserver.handler.UriMappingHandler;
+import com.myz.cuteserver.handler.HttpRequestHandler;
 import com.myz.cuteserver.processor.UriMappingProcessor;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -44,6 +44,7 @@ public class CuteServer {
         this.port = port;
     }
 
+
     public void start() {
         if (Epoll.isAvailable()) {
             logger.info("CuteServer use EpollEventLoopGroup!");
@@ -72,7 +73,7 @@ public class CuteServer {
                                 .addLast("decoder", new HttpRequestDecoder())
                                 .addLast("encoder", new HttpResponseEncoder())
                                 //.addLast("handler", new CuteServerHandler());
-                                .addLast("handler", new UriMappingHandler(uriMappingProcessor));
+                                .addLast("handler", new HttpRequestHandler(uriMappingProcessor));
                     }
                 });
 
