@@ -3,7 +3,6 @@ package com.myz.cuteserver.processor;
 import com.myz.cuteserver.annotation.UriMapping;
 import com.myz.cuteserver.annotation.UriVariable;
 import com.myz.cuteserver.mapping.RootMapping;
-import com.myz.cuteserver.mapping.SimpleMapping;
 import com.myz.cuteserver.util.StrUtil;
 import io.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
@@ -11,9 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,25 +22,22 @@ public class UriMappingProcessor implements HttpRequestProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(UriMappingProcessor.class);
 
-    List mappingObjList = new ArrayList();
-
-    Map<String, MethodHandle> methodHandleMap = new HashMap<>();
+    private Map<String, MethodHandle> methodHandleMap = new HashMap<>();
 
     public UriMappingProcessor() {
-        mappingObjList.add(new SimpleMapping());
-
-        for (Object mappingObj : mappingObjList) {
-            findMappingMethods(mappingObj);
-        }
 
         if (!methodHandleMap.containsKey("/")) {
             findMappingMethods(new RootMapping());
         }
     }
 
+    public UriMappingProcessor withMapping(Object mappingInstance) {
+        findMappingMethods(mappingInstance);
+        return this;
+    }
 
     @Override
-    public Object processHttpRequest(HttpRequest request) {
+    public Object processHttpRequest(HttpRequest request) throws Exception {
         String uri = request.uri();
         if (StrUtil.isEmpty(uri)) {
             logger.info("bad request: uri is empty");
@@ -51,18 +45,7 @@ public class UriMappingProcessor implements HttpRequestProcessor {
         }
         logger.info("incoming request: uri={}", uri);
 
-        Object result;
-        try {
-            result = executeWithUri(uri);
-        }catch (NoSuchMethodException e) {
-            // ctx.channel().writeAndFlush(returnWithStatus("uri is not found", HttpResponseStatus.NOT_FOUND));
-            return null;
-        }
-        catch (Exception e) {
-            logger.error("exception when executeWithUri", e);
-            //ctx.channel().writeAndFlush(returnWithStatus("exception: " + e.getMessage(), HttpResponseStatus.INTERNAL_SERVER_ERROR));
-            return null;
-        }
+        Object result = executeWithUri(uri);
 
         return result;
     }

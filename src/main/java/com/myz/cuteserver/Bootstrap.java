@@ -1,5 +1,8 @@
 package com.myz.cuteserver;
 
+import com.myz.cuteserver.mapping.SimpleMapping;
+import com.myz.cuteserver.processor.UriMappingProcessor;
+
 /**
  * @author: zhaomingyu
  * @date: 2023/11/8 11:21 AM
@@ -12,7 +15,12 @@ public class Bootstrap {
         if (args != null && args.length > 0) {
             port = Integer.getInteger(args[0], 9091);
         }
-        CuteServer cuteServer = new CuteServer(port);
+
+        // create and start a CuteServer
+        CuteServer cuteServer = new CuteServer.Builder()
+                .withPort(port)
+                .withHttpRequestProcessor(new UriMappingProcessor().withMapping(new SimpleMapping()))
+                .build();
         cuteServer.start();
     }
 

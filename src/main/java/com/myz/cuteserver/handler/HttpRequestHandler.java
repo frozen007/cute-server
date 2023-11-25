@@ -57,17 +57,33 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void handle(ChannelHandlerContext ctx, HttpRequest request) throws Exception {
-        Object result = processor.processHttpRequest(request);
+    private void handle(ChannelHandlerContext ctx, HttpRequest request) throws UnsupportedEncodingException {
+        Object result = null;
+        try {
+            result = processor.processHttpRequest(request);
+        } catch (NoSuchMethodException e) {
+            ctx.channel().writeAndFlush(returnWithStatus(e.getMessage(), HttpResponseStatus.NOT_FOUND));
+            return;
+        } catch (Exception e) {
+            logger.error("exception when processHttpRequest", e);
+            ctx.channel().writeAndFlush(returnWithStatus(e.getMessage(), HttpResponseStatus.INTERNAL_SERVER_ERROR));
+            return;
+        }
 
         String response = result == null ? "null" : result.toString();
 
         HttpResponseStatus status = HttpResponseStatus.OK;
 
         FullHttpResponse httpResponse;
-        byte[] bytes = response.getBytes("UTF-8");
+        byte[] bytes = new byte[0];
+        try {
+            bytes = response.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.wrappedBuffer(bytes));
 
+        //todo: may be controlled by outer code
         httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
         httpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
         if (HttpUtil.isKeepAlive(request)) {

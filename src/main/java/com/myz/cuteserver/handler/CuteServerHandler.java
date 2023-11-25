@@ -20,6 +20,7 @@ import java.util.Date;
 /**
  * @author: zhaomingyu
  */
+@Deprecated
 public class CuteServerHandler extends ChannelInboundHandlerAdapter {
 
     private static final String REDIRECT_URL = "https://blog.csdn.net/weixin_43934607/article/details/116618227";

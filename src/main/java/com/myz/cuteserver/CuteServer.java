@@ -1,6 +1,7 @@
 package com.myz.cuteserver;
 
 import com.myz.cuteserver.handler.HttpRequestHandler;
+import com.myz.cuteserver.processor.HttpRequestProcessor;
 import com.myz.cuteserver.processor.UriMappingProcessor;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -38,12 +39,44 @@ public class CuteServer {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
+    private HttpRequestProcessor httpRequestProcessor;
+
     private int port;
 
-    public CuteServer(int port) {
+    private CuteServer() {
+
+    }
+
+    private CuteServer(int port) {
         this.port = port;
     }
 
+    public static CuteServer withPort(int port) {
+        return new CuteServer(port);
+    }
+
+
+    public static class Builder {
+        private CuteServer cuteServer;
+
+        public Builder() {
+            cuteServer = new CuteServer();
+        }
+
+        public Builder withPort(int port) {
+            cuteServer.port = port;
+            return this;
+        }
+
+        public Builder withHttpRequestProcessor(HttpRequestProcessor httpRequestProcessor) {
+            cuteServer.httpRequestProcessor = httpRequestProcessor;
+            return this;
+        }
+
+        public CuteServer build() {
+            return cuteServer;
+        }
+    }
 
     public void start() {
         if (Epoll.isAvailable()) {
@@ -57,7 +90,6 @@ public class CuteServer {
                     new DefaultThreadFactory("CuteServerWorkerGroup", true));
         }
 
-        UriMappingProcessor uriMappingProcessor = new UriMappingProcessor();
         bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup)
                 .channel(workerGroup instanceof EpollEventLoopGroup ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
@@ -73,12 +105,13 @@ public class CuteServer {
                                 .addLast("decoder", new HttpRequestDecoder())
                                 .addLast("encoder", new HttpResponseEncoder())
                                 //.addLast("handler", new CuteServerHandler());
-                                .addLast("handler", new HttpRequestHandler(uriMappingProcessor));
+                                .addLast("handler", new HttpRequestHandler(httpRequestProcessor));
                     }
                 });
 
         InetSocketAddress localAddress = new InetSocketAddress(port);
         ChannelFuture channelFuture = bootstrap.bind(localAddress);
         channelFuture.syncUninterruptibly();
+        logger.info("CuteServer started, port={}", port);
     }
 }

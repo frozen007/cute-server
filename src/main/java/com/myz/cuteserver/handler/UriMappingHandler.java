@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
  * @date: 2023/11/24 7:23 PM
  * @description:
  */
+@Deprecated
 public class UriMappingHandler extends ChannelInboundHandlerAdapter {
     private static Logger logger = LoggerFactory.getLogger(UriMappingHandler.class);
 

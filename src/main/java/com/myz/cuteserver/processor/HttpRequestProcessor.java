@@ -8,6 +8,6 @@ import io.netty.handler.codec.http.HttpRequest;
  * @description:
  */
 public interface HttpRequestProcessor {
+    Object processHttpRequest(HttpRequest request) throws Exception;
 
-    Object processHttpRequest(HttpRequest request);
 }
