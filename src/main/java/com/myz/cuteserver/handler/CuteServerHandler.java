@@ -23,7 +23,7 @@ import java.util.Date;
 @Deprecated
 public class CuteServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static final String REDIRECT_URL = "https://blog.csdn.net/weixin_43934607/article/details/116618227";
+    private static final String REDIRECT_URL = "";
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 

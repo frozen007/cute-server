@@ -6,8 +6,7 @@ import com.myz.cuteserver.annotation.UriVariable;
 import java.util.Date;
 
 /**
- * @author: zhaomingyumt
- * @date: 2023/11/24 7:17 PM
+ * @author: zhaomingyu
  * @description:
  */
 public class SimpleMapping {

@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @author: zhaomingyumt
- * @date: 2023/11/25 11:59 AM
+ * @author: zhaomingyu
  * @description:
  */
 public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
@@ -58,7 +57,7 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handle(ChannelHandlerContext ctx, HttpRequest request) throws UnsupportedEncodingException {
-        Object result = null;
+        Object result;
         try {
             result = processor.processHttpRequest(request);
         } catch (NoSuchMethodException e) {

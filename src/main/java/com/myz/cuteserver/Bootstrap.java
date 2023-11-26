@@ -5,7 +5,6 @@ import com.myz.cuteserver.processor.UriMappingProcessor;
 
 /**
  * @author: zhaomingyu
- * @date: 2023/11/8 11:21 AM
  * @description:
  */
 public class Bootstrap {

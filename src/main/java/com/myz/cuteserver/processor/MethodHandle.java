@@ -4,8 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @author: zhaomingyumt
- * @date: 2023/11/24 7:43 PM
+ * @author: zhaomingyu
  * @description:
  */
 public class MethodHandle {

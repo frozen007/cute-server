@@ -2,7 +2,6 @@ package com.myz.cuteserver;
 
 import com.myz.cuteserver.handler.HttpRequestHandler;
 import com.myz.cuteserver.processor.HttpRequestProcessor;
-import com.myz.cuteserver.processor.UriMappingProcessor;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -25,7 +24,6 @@ import java.net.InetSocketAddress;
 
 /**
  * @author: zhaomingyu
- * @date: 2023/11/8 11:24 AM
  * @description:
  */
 public class CuteServer {
@@ -46,15 +44,6 @@ public class CuteServer {
     private CuteServer() {
 
     }
-
-    private CuteServer(int port) {
-        this.port = port;
-    }
-
-    public static CuteServer withPort(int port) {
-        return new CuteServer(port);
-    }
-
 
     public static class Builder {
         private CuteServer cuteServer;

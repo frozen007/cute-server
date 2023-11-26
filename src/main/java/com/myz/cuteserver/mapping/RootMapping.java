@@ -3,8 +3,7 @@ package com.myz.cuteserver.mapping;
 import com.myz.cuteserver.annotation.UriMapping;
 
 /**
- * @author: zhaomingyumt
- * @date: 2023/11/24 8:20 PM
+ * @author: zhaomingyu
  * @description:
  */
 public class RootMapping {
