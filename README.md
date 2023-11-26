@@ -5,6 +5,7 @@ cute-server is a tiny http server, based on netty, that can embedded in your jav
 you can use annotations to define http api and implement logic by your own code. 
 
 ## usage
+use ``@UriMapping`` and ``@UriVariable`` to define mapping url and variable
 
 ### create a mapping
 ```java
@@ -58,7 +59,8 @@ docker build -t myz/cute-server:1.0 .
 docker run --name=cute-server myz/cute-server:1.0
 ```
 
-### fire a request
+### fire requests
 ```shell
-curl http://<ip-of-container>:9091/
+curl http://<ip-of-container>:9091/echo
+curl http://<ip-of-container>:9091/hello?name=zmy&age=30
 ```

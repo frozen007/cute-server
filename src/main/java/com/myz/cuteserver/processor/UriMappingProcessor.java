@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,18 +23,28 @@ public class UriMappingProcessor implements HttpRequestProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(UriMappingProcessor.class);
 
+    private List mappings = new ArrayList<>();
+
     private Map<String, MethodHandle> methodHandleMap = new HashMap<>();
 
     public UriMappingProcessor() {
 
-        if (!methodHandleMap.containsKey("/")) {
-            findMappingMethods(new RootMapping());
-        }
     }
 
     public UriMappingProcessor withMapping(Object mappingInstance) {
-        findMappingMethods(mappingInstance);
+        mappings.add(mappingInstance);
+
         return this;
+    }
+
+    @Override
+    public void config() {
+        for (Object mapping : mappings) {
+            findMappingMethods(mapping);
+        }
+        if (!methodHandleMap.containsKey("/")) {
+            findMappingMethods(new RootMapping());
+        }
     }
 
     @Override

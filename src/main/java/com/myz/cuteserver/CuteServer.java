@@ -63,6 +63,7 @@ public class CuteServer {
         }
 
         public CuteServer build() {
+            cuteServer.httpRequestProcessor.config();
             return cuteServer;
         }
     }
