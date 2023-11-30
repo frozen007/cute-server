@@ -14,6 +14,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +28,9 @@ import java.io.UnsupportedEncodingException;
 public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     private static Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
 
-    private HttpRequestProcessor processor;
+    private static AttributeKey<HttpRequest> attributeKey = AttributeKey.newInstance("request");
 
-    private HttpRequest request;
+    private HttpRequestProcessor processor;
 
     public HttpRequestHandler(HttpRequestProcessor processor) {
         this.processor = processor;
@@ -37,11 +39,16 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest) {
-            request = (HttpRequest) msg;
+            HttpRequest request = (HttpRequest) msg;
+
+            Attribute<HttpRequest> requestAttr = ctx.channel().attr(attributeKey);
+            requestAttr.set(request);
         }
 
         if (msg instanceof HttpContent) {
-            if ("/favicon.ico".equals(request.uri())) {
+            Attribute<HttpRequest> requestAttr = ctx.channel().attr(attributeKey);
+            HttpRequest reqObj = requestAttr.get();
+            if ("/favicon.ico".equals(reqObj.uri())) {
                 return;
             }
 
@@ -51,7 +58,7 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
                 byte[] buffer = new byte[buf.readableBytes()];
                 buf.readBytes(buffer);
                 buf.release();
-                handle(ctx, request);
+                handle(ctx, reqObj);
             }
         }
     }
